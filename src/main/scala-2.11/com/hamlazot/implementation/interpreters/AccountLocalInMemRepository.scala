@@ -1,4 +1,4 @@
-package com.hamlazot.scripts.interpreters
+package com.hamlazot.implementation.interpreters
 
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.UnaryOperator

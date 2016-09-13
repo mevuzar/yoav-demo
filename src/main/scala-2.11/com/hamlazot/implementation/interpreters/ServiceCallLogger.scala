@@ -1,4 +1,4 @@
-package com.hamlazot.scripts.interpreters
+package com.hamlazot.implementation.interpreters
 
 import com.hamlazot.FutureStringOr
 import com.hamlazot.ServiceDSL.{ServerCall, ServiceOperation}

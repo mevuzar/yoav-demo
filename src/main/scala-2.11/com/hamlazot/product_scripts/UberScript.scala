@@ -1,7 +1,9 @@
-package com.hamlazot.scripts
+package com.hamlazot
+package product_scripts
+
 
 import com.typesafe.scalalogging.LazyLogging
-import interpreters.StdInInteractionInterpreter
+import implementation.interpreters.StdInInteractionInterpreter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 

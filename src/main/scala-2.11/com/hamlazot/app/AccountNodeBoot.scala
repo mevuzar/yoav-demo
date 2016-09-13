@@ -1,12 +1,14 @@
-package com.hamlazot.app.cqrs
+package com.hamlazot.app
 
-import akka.actor.{ActorRef, ActorIdentity, Identify, Props, ActorPath, ActorSystem}
+import akka.actor.{ActorIdentity, ActorPath, ActorRef, ActorSystem, Identify, Props}
 import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings}
+import akka.pattern.ask
 import akka.persistence.journal.leveldb.{SharedLeveldbJournal, SharedLeveldbStore}
 import akka.util.Timeout
+import com.hamlazot.implementation.cqrs.{AccountView, AccountWriter}
 import com.typesafe.config.ConfigFactory
+
 import scala.concurrent.duration._
-import akka.pattern.ask
 
 /**
  * @author yoav @since 9/13/16.
@@ -21,12 +23,12 @@ object AccountNodeBoot extends App{
 
 
   def startup(ports: Seq[String]): Unit = {
+
     ports foreach { port =>
       // Override the configuration of the port
-      val config = ConfigFactory.parseString("akka.remote.netty.tcp.port=" + port).
+      val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=$port \nakka.actor.provider=akka.cluster.ClusterActorRefProvider").
         withFallback(ConfigFactory.load())
 
-      // Create an Akka system
       val system = ActorSystem("accounts-service", config)
 
       startupSharedJournal(system, startStore = (port == "2551"), path =
@@ -34,8 +36,6 @@ object AccountNodeBoot extends App{
 
       getRegionActors(system)
 
-//      if (port != "2551" && port != "2552")
-//        system.actorOf(Props[Bot], "bot")
     }
 
     def startupSharedJournal(system: ActorSystem, startStore: Boolean, path: ActorPath): Unit = {

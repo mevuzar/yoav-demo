@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.hamlazot.FutureStringOr
 import com.hamlazot.ServiceDSL.ServiceMethodCall
-import com.hamlazot.app.cqrs.AccountWriter.ChangeAccountMail
+import com.hamlazot.implementation.cqrs.AccountWriter.ChangeAccountMail
 import com.hamlazot.domain.impl.model.AccountModel.{UserToken, UserAccount, AccountCredentials, UserSignupDetails}
 import com.hamlazot.ServiceDSL.ServiceOperations._
 import scala.util.Try

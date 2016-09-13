@@ -1,5 +1,5 @@
 package com.hamlazot
-package scripts.interpreters
+package implementation.interpreters
 
 import java.time.{ZoneId, ZonedDateTime}
 

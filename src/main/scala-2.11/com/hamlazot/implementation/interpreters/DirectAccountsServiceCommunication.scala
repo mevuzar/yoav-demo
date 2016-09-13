@@ -1,4 +1,4 @@
-package com.hamlazot.scripts.interpreters
+package com.hamlazot.implementation.interpreters
 
 import com.hamlazot.ServiceDSL.{ServerCall, ServiceOperation}
 import com.hamlazot.domain.impl.common.accounts.communication.AccountsCommunicationF.{UpdateMailCall, AccountsMethodCall, SignInCall, SignOutCall, SignUpCall}

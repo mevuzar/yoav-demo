@@ -1,12 +1,12 @@
 package com.hamlazot
-package scripts.interpreters
+package implementation.interpreters
 
 import java.util.UUID
 
 import akka.actor.ActorSystem
-import com.hamlazot.ServiceDSL.ServiceOperation
-import com.hamlazot.domain.impl.client.accounts.interpreter.ClientAccountsProductionService
-import com.hamlazot.domain.impl.model.AccountModel.UserAccount
+import ServiceDSL.ServiceOperation
+import domain.impl.client.accounts.interpreter.ClientAccountsProductionService
+import domain.impl.model.AccountModel.UserAccount
 
 import scala.concurrent.{Future, ExecutionContext}
 import scalaz.{Id, ~>}

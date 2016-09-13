@@ -6,9 +6,9 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.hamlazot.DataDSL.DataStoreRequest
 import com.hamlazot.app.api.AccountsHttpService
-import com.hamlazot.app.cqrs.{AccountNodeBoot, AccountsRepositoryCQRSInterpreter}
+import com.hamlazot.implementation.cqrs.AccountsRepositoryCQRSInterpreter
 import com.hamlazot.domain.impl.server.accounts.interpreter.AccountsServiceProduction
-import com.hamlazot.scripts.interpreters.{AccountsRepositoryLoggerInterpreter, AccountsServiceProduct}
+import com.hamlazot.implementation.interpreters.{AccountsRepositoryLoggerInterpreter, AccountsServiceProduct}
 import com.typesafe.config.{ConfigFactory, Config}
 import com.typesafe.scalalogging.LazyLogging
 

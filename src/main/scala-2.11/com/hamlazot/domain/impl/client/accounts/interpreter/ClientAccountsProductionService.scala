@@ -5,11 +5,11 @@ package client.accounts.interpreter
 
 import java.util.UUID
 
-import com.hamlazot.ServiceDSL.ServiceOperation
-import com.hamlazot.domain.contract.client.ClientAccountService
-import com.hamlazot.domain.impl.common.accounts.communication.AccountsCommunicationF.AccountsCommunicationOperations
-import com.hamlazot.domain.impl.model.AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
-import com.typesafe.scalalogging.LazyLogging
+import ServiceDSL.ServiceOperation
+import implementation.cqrs.Logging
+import contract.client.ClientAccountService
+import common.accounts.communication.AccountsCommunicationF.AccountsCommunicationOperations
+import model.AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
@@ -19,7 +19,7 @@ import scalaz.{Free, Id, ~>}
 /**
  * @author yoav @since 7/6/16.
  */
-trait ClientAccountsProductionService extends ClientAccountService with LazyLogging {
+trait ClientAccountsProductionService extends ClientAccountService with Logging {
   //with Serializer {
 
   implicit val ctxt: ExecutionContext

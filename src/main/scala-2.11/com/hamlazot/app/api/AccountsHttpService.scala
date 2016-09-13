@@ -8,6 +8,7 @@ import akka.http.scaladsl.server.directives.{MethodDirectives, MiscDirectives, P
 import akka.stream.ActorMaterializer
 import com.hamlazot.domain.impl.model.AccountModel.UserSignupDetails
 import com.hamlazot.domain.impl.server.accounts.interpreter.AccountsServiceProduction
+import com.hamlazot.implementation.serialization.JsonMarshalling
 import com.typesafe.scalalogging.LazyLogging
 import org.json4s.MappingException
 import java.util.UUID

@@ -1,74 +1,17 @@
-package com.hamlazot.app.cqrs
+package com.hamlazot.implementation.cqrs
 
 import java.util.UUID
 
 import akka.actor.{ActorRef, PoisonPill, Props}
 import akka.cluster.sharding.ShardRegion
 import akka.cluster.sharding.ShardRegion.Passivate
-import akka.pattern.ask
-import akka.persistence.{Update, DeleteMessagesSuccess, PersistentActor}
-import akka.util.Timeout
-import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
-import com.hamlazot.app.cqrs.AccountView.{AccountEnvelope, GetAccountQuery}
-import com.hamlazot.app.cqrs.AccountWriter.{AccountAck, AccountCreatedEvent, AccountCreationAck, AccountDeletedEvent, AccountDeletionAck, AccountEvent, AccountMailChangedEvent, AccountMailUpdateAck, AccountTokenRefreshAck, AccountTokenRefreshedEvent, ChangeAccountMail, CreateAccount, RefreshToken}
+import akka.persistence.{DeleteMessagesSuccess, PersistentActor, Update}
 import com.hamlazot.domain.impl.model.AccountModel.{AccountCredentials, UserAccount}
-import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.{AccountQuery, DeleteAccount, StoreAccount, UpdateMail}
-import com.hamlazot.scripts.interpreters.cqrs.{Logging, Passivation, UnknownCommandSupport}
+import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.DeleteAccount
+import com.hamlazot.implementation.cqrs.AccountWriter.{AccountAck, AccountCreatedEvent, AccountCreationAck, AccountDeletedEvent, AccountDeletionAck, AccountEvent, AccountMailChangedEvent, AccountMailUpdateAck, AccountTokenRefreshAck, AccountTokenRefreshedEvent, ChangeAccountMail, CreateAccount, RefreshToken}
 
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Right
-import scalaz.{Id, ~>}
 
-/**
- * @author yoav @since 9/12/16.
- */
-
-class AccountsRepositoryCQRSInterpreter(writer: ActorRef, reader: ActorRef)(implicit ctxt: ExecutionContext) extends (DataStoreRequest ~> Id.Id) {
-
-  reader ! Update(await = true)
-
-  override def apply[A](fa: DataStoreRequest[A]): Id.Id[A] = fa match {
-    //case Pure(a) => a
-    case DataOpteration(operation) =>
-      operation match {
-
-        case StoreAccount(account) =>
-          implicit val timeout = Timeout(5 seconds)
-          val token = UUID.randomUUID
-          val response = (writer ? CreateAccount(account.id, account.credentials, token, account.name, account.mail)).mapTo[AccountCreationAck]
-          val eventualUnit = response map (ack => (()))
-
-          Right(eventualUnit)
-
-        case DeleteAccount(userId) =>
-          implicit val timeout = Timeout(3 seconds)
-          val response = (writer ? DeleteAccount(userId)).mapTo[AccountDeletionAck]
-          Right(response.map(ack => Future.successful(())))
-
-        case UpdateMail(id, mail) =>
-          implicit val timeout = Timeout(3 seconds)
-          val response = (writer ? ChangeAccountMail(id, mail)).mapTo[AccountMailUpdateAck]
-
-          val eventualAccount = response.map(ack => {
-            val futureEnvelope = (reader ? GetAccountQuery(id)).mapTo[AccountEnvelope]
-            futureEnvelope.map(env => env.userAccount)
-          }).flatMap(identity)
-
-          Right(eventualAccount)
-
-        case AccountQuery(id) =>
-          implicit val timeout = Timeout(5 seconds)
-          val futureEnvelope = (reader ? GetAccountQuery(id)).mapTo[AccountEnvelope]
-          val eventualAccount = futureEnvelope.map(env => env.userAccount)
-
-          Right (eventualAccount)
-
-
-  }
-}
-
-}
 
 class AccountWriter(view: ActorRef)
   extends PersistentActor
@@ -178,6 +121,8 @@ object AccountWriter {
   case class ChangeAccountMail(id: UUID, mail: String) extends AccountCommand
 
   case class DeleteAccount(id: UUID) extends AccountCommand
+
+  case class GetAccountQuery(id: UUID) extends AccountCommand
 
 
   sealed trait AccountEvent

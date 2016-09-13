@@ -1,9 +1,9 @@
-package com.hamlazot.scripts.interpreters
+package com.hamlazot.implementation.interpreters
 
 import java.util.UUID
 
 import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
-import com.hamlazot.app.cqrs.AccountWriter.RefreshToken
+import com.hamlazot.implementation.cqrs.AccountWriter.RefreshToken
 import com.hamlazot.domain.impl.model.AccountModel.{UserAccount, UserToken}
 import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.{UpdateMail, RefreshUserToken, AccountQuery, DeleteAccount, StoreAccount}
 

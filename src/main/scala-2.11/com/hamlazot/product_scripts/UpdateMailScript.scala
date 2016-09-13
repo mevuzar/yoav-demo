@@ -1,7 +1,7 @@
-package com.hamlazot.scripts
+package com.hamlazot.product_scripts
 
 import com.hamlazot.domain.impl.client.accounts.AccountsUserInteractions
-import com.hamlazot.scripts.interpreters.UserAccounts
+import com.hamlazot.implementation.interpreters.UserAccounts
 import java.util.UUID
 /**
  * @author yoav @since 9/12/16.

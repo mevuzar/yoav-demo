@@ -1,10 +1,10 @@
 package com.hamlazot
-package scripts
+package product_scripts
 
 import domain.contract.client.{AccountLocalRepository, Question}
 import domain.impl.client.accounts.AccountsUserInteractions
 import domain.impl.model.AccountModel.{AccountCredentials, UserAccount, UserToken}
-import interpreters.UserAccounts
+import implementation.interpreters.UserAccounts
 
 import scala.concurrent.Future
 import scala.util.Try

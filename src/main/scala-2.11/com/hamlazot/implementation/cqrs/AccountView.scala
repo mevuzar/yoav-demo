@@ -1,26 +1,24 @@
 package com.hamlazot
-package app.cqrs
+package implementation.cqrs
 
 import java.util.UUID
 
-import akka.actor.Actor.Receive
-import akka.actor.{Props, PoisonPill}
+import akka.actor.{ActorLogging, PoisonPill, Props}
 import akka.cluster.sharding.ShardRegion
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.persistence.PersistentView
-import com.hamlazot.app.cqrs.AccountView.{AccountEnvelope, GetAccountQuery}
-import com.hamlazot.app.cqrs.AccountWriter.{AccountDeletedEvent, AccountMailChangedEvent, AccountTokenRefreshedEvent, AccountCreatedEvent}
-import com.hamlazot.scripts.interpreters.cqrs.{UnknownCommandSupport, Passivation}
-import com.hamlazot.domain.impl.model.AccountModel.{AccountCredentials, UserAccount}
+import domain.impl.model.AccountModel._
 import scala.concurrent.duration._
+import AccountWriter._
+import AccountView._
 
 /**
  * @author yoav @since 9/12/16.
  */
-class AccountView extends PersistentView with Passivation with UnknownCommandSupport{
+class AccountView extends PersistentView with Passivation with UnknownCommandSupport with ActorLogging{
   override def viewId: String = self.path.parent.name + "-" + self.path.name
 
-  override def persistenceId: String = "Account" + "-" + self.path.name
+  override def persistenceId: String = "AccountWriter" + "-" + self.path.name
 
   context.setReceiveTimeout(1 minute)
 
@@ -33,7 +31,8 @@ class AccountView extends PersistentView with Passivation with UnknownCommandSup
       context.become(passivate(createdState(newState)).orElse(unknownCommand))
 
     case GetAccountQuery(id) =>
-      sender() ! AccountEnvelope(UUID.randomUUID, UserAccount(UUID.randomUUID, AccountCredentials("yoyo", "1234"), UUID.randomUUID, "yoyo", "yoav.sadeh@gmail.com"))
+      logger.warn(s"premature account request for id $id")
+      sender() ! PrematureRequest(id)
   }
 
   def createdState(state: AccountEnvelope): Receive = {
@@ -61,18 +60,21 @@ object AccountView {
   def props() = Props(new AccountView)
 
   val idExtractor: ShardRegion.ExtractEntityId = {
-    case get: GetAccountQuery => (get.id.toString, get)
+    case cmd: AccountCommand => (cmd.id.toString, cmd)
   }
 
   val shardResolver: ShardRegion.ExtractShardId = msg => msg match {
-    case get: GetAccountQuery    => (math.abs(get.id.hashCode) % 100).toString
+    case cmd: AccountCommand => (math.abs(cmd.id.hashCode) % 100).toString
   }
 
 
-  sealed trait AccountQuery{
+  sealed trait AccountQuery {
     val id: UUID
   }
-  case class GetAccountQuery(id: UUID) extends AccountQuery
+
 
   case class AccountEnvelope(id: UUID, userAccount: UserAccount)
+
+  case class PrematureRequest(id: UUID)
+
 }
