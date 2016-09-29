@@ -1,20 +1,23 @@
 package com.hamlazot.app
 
 import akka.actor.{ActorIdentity, ActorPath, ActorRef, ActorSystem, Identify, Props}
+import akka.cluster.sharding.ShardRegion.MessageExtractor
 import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings}
 import akka.pattern.ask
 import akka.persistence.journal.leveldb.{SharedLeveldbJournal, SharedLeveldbStore}
 import akka.util.Timeout
 import com.hamlazot.implementation.cqrs.{AccountView, AccountWriter}
 import com.typesafe.config.ConfigFactory
+import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.duration._
+import java.util.Optional
 
 /**
  * @author yoav @since 9/13/16.
  */
 
-object AccountNodeBoot extends App{
+object AccountNodeBoot extends App with LazyLogging{
 
   if (args.isEmpty)
     startup(Seq("2551", "2552", "0"))
@@ -26,7 +29,7 @@ object AccountNodeBoot extends App{
 
     ports foreach { port =>
       // Override the configuration of the port
-      val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=$port \nakka.actor.provider=akka.cluster.ClusterActorRefProvider").
+      val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=$port"). // \nakka.actor.provider=akka.cluster.ClusterActorRefProvider").
         withFallback(ConfigFactory.load())
 
       val system = ActorSystem("accounts-service", config)
@@ -63,6 +66,7 @@ object AccountNodeBoot extends App{
   }
 
   def getRegionActors(system: ActorSystem): (ActorRef, ActorRef) = {
+
     val viewRegion = ClusterSharding(system).start(
       typeName = AccountView.shardName,
       entityProps = AccountView.props(),
@@ -71,10 +75,25 @@ object AccountNodeBoot extends App{
       extractShardId = AccountView.shardResolver)
     val writerRegion = ClusterSharding(system).start(
       typeName = AccountWriter.shardName,
-      entityProps = AccountWriter.props(viewRegion),
+      entityProps = AccountWriter.props(viewRegion), //AccountWriter.props(viewRegion), //AccountWriter.props(getRegionActors(system)._1),
       settings = ClusterShardingSettings(system),
       extractEntityId = AccountWriter.idExtractor,
       extractShardId = AccountWriter.shardResolver)
+
+    logger.info(s"got actors:\n$viewRegion\n$writerRegion")
+
+    (viewRegion, writerRegion)
+  }
+
+  def getRegionProxyActors(system: ActorSystem): (ActorRef, ActorRef) = {
+
+
+    val viewRegion = ClusterSharding(system).startProxy(AccountView.shardName, Some("AppViewMeshigane"), AccountView.idExtractor, AccountView.shardResolver)
+
+    val writerRegion = ClusterSharding(system).startProxy(AccountWriter.shardName, Some("AppWriterMeshigane"), AccountWriter.idExtractor, AccountWriter.shardResolver)
+
+    logger.info(s"got actors:\n$viewRegion\n$writerRegion")
+
     (viewRegion, writerRegion)
   }
 }

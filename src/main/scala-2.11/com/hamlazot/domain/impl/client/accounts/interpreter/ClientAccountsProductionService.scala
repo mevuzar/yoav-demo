@@ -24,7 +24,7 @@ trait ClientAccountsProductionService extends ClientAccountService with Logging 
 
   implicit val ctxt: ExecutionContext
 
-  val accountService: (ServiceOperation ~> Id.Id)
+  val accountServiceCommunication: (ServiceOperation ~> Id.Id)
   val serviceCallLogger: (ServiceOperation ~> Id.Id)
 
   override type Operation[A, B] = A => Future[B]
@@ -42,7 +42,7 @@ trait ClientAccountsProductionService extends ClientAccountService with Logging 
     val serviceLog = Free.runFC(script)(serviceCallLogger).left.get
     serviceLog.map(log => logger.info(log))
 
-    val result = Free.runFC(script)(accountService).right
+    val result = Free.runFC(script)(accountServiceCommunication).right
     result.get onSuccess {
       case accountTry =>
         dataStore.storeAccount(accountTry)
@@ -62,7 +62,7 @@ trait ClientAccountsProductionService extends ClientAccountService with Logging 
       logger.info(log)
     })
 
-    val result = Free.runFC(script)(accountService).right
+    val result = Free.runFC(script)(accountServiceCommunication).right
     result.get onSuccess {
       case accountTry =>
         dataStore.storeAccount(accountTry)
@@ -74,7 +74,7 @@ trait ClientAccountsProductionService extends ClientAccountService with Logging 
 
   override def signIn: (SignInRequest) => Future[Try[AuthenticationToken]] = { request => {
     val script = AccountsCommunicationOperations.signIn(request)
-    val futureTryToken = Free.runFC(script)(accountService).right.get
+    val futureTryToken = Free.runFC(script)(accountServiceCommunication).right.get
     futureTryToken onSuccess {
       case Success(token) => dataStore.updateAccount(a => a.copy(token = token.token))
       case _ =>
@@ -86,7 +86,7 @@ trait ClientAccountsProductionService extends ClientAccountService with Logging 
 
   override def signOut: (SignOutRequest) => Future[Boolean] = { request => {
     val script = AccountsCommunicationOperations.signOut(request)
-    val futureSignOut = Free.runFC(script)(accountService).right.get
+    val futureSignOut = Free.runFC(script)(accountServiceCommunication).right.get
     futureSignOut onSuccess {
       case success => dataStore.updateAccount(a => a.copy(token = null)) //TODO: make token Option[UUID]
       case _ =>
@@ -99,7 +99,7 @@ trait ClientAccountsProductionService extends ClientAccountService with Logging 
 
   override def changeMailAddress: ((UUID, String)) => Future[UserAccount] = { request =>
     val script = AccountsCommunicationOperations.updateMail(request)
-    val futureUpdateMail = Free.runFC(script)(accountService).right.get
+    val futureUpdateMail = Free.runFC(script)(accountServiceCommunication).right.get
 
     futureUpdateMail onSuccess {
       case account => dataStore.updateAccount(a => a.copy(mail = account.mail))

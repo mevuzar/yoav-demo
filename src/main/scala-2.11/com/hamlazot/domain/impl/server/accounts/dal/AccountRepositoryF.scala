@@ -25,7 +25,7 @@ object AccountRepositoryF {
 
     sealed trait AccountDataCall[+A] extends DataCall[A]
 
-    final case class AccountQuery(id: UUID) extends AccountDataCall[FutureStringOr[UserAccount]]
+    final case class AccountQueryex(id: UUID) extends AccountDataCall[FutureStringOr[UserAccount]]
 
     final case class StoreAccount(account: UserAccount) extends AccountDataCall[FutureStringOr[Unit]]
 
@@ -41,7 +41,7 @@ object AccountRepositoryF {
 
     import DSL._
 
-    def query(id: UUID) = dataOperation(AccountQuery(id))
+    def query(id: UUID) = dataOperation(AccountQueryex(id))
 
     def store[A](userAccount: UserAccount) = dataOperation(StoreAccount(userAccount))
 

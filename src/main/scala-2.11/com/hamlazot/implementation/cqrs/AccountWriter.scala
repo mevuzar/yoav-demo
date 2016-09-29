@@ -2,10 +2,16 @@ package com.hamlazot.implementation.cqrs
 
 import java.util.UUID
 
+import akka.NotUsed
 import akka.actor.{ActorRef, PoisonPill, Props}
 import akka.cluster.sharding.ShardRegion
 import akka.cluster.sharding.ShardRegion.Passivate
+import akka.persistence.journal.leveldb.SharedLeveldbJournal
+import akka.persistence.query.PersistenceQuery
+import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import akka.persistence.{DeleteMessagesSuccess, PersistentActor, Update}
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.Source
 import com.hamlazot.domain.impl.model.AccountModel.{AccountCredentials, UserAccount}
 import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.DeleteAccount
 import com.hamlazot.implementation.cqrs.AccountWriter.{AccountAck, AccountCreatedEvent, AccountCreationAck, AccountDeletedEvent, AccountDeletionAck, AccountEvent, AccountMailChangedEvent, AccountMailUpdateAck, AccountTokenRefreshAck, AccountTokenRefreshedEvent, ChangeAccountMail, CreateAccount, RefreshToken}
@@ -19,6 +25,11 @@ class AccountWriter(view: ActorRef)
   with Passivation
   with Logging {
 
+
+  logger.info(s"got view: $view")
+  val anotherView = view //context.actorOf(Props[AccountView])
+  anotherView ! Update
+
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
   context.setReceiveTimeout(2.minutes)
@@ -29,9 +40,13 @@ class AccountWriter(view: ActorRef)
 
     processedCommand.event.fold(sender() ! processedCommand.ack) { evt =>
       persist(evt.logDebug("+++++++++++++  evt = " + _.toString)) { persistedEvt =>
-        view ! Update(await = true)
+        //anotherView ! Update//(await = true)
         processedCommand.event.map(evt => {
-          view ! evt
+          //var vv = context.children.toList.find(_.path == anotherView.path)
+          anotherView ! evt
+          Thread.sleep(1000)
+          //vv = context.children.toList.find(_.path == anotherView.path)
+          anotherView ! evt
         })
         sendr ! processedCommand.ack
         processedCommand.newReceive.fold({})(context.become)
@@ -125,7 +140,7 @@ object AccountWriter {
   case class GetAccountQuery(id: UUID) extends AccountCommand
 
 
-  sealed trait AccountEvent
+  sealed trait AccountEvent extends AccountMessage
 
   case class AccountCreatedEvent(id: UUID,
                                  credentials: AccountCredentials,

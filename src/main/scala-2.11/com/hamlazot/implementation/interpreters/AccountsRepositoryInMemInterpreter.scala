@@ -5,7 +5,7 @@ import java.util.UUID
 import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
 import com.hamlazot.implementation.cqrs.AccountWriter.RefreshToken
 import com.hamlazot.domain.impl.model.AccountModel.{UserAccount, UserToken}
-import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.{UpdateMail, RefreshUserToken, AccountQuery, DeleteAccount, StoreAccount}
+import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.{UpdateMail, RefreshUserToken, AccountQueryex, DeleteAccount, StoreAccount}
 
 import scala.collection.mutable.HashMap
 import scala.concurrent.Future
@@ -26,7 +26,7 @@ object AccountsRepositoryInMemInterpreter extends (DataStoreRequest ~> Id.Id) {
       //case Pure(a) => a
       case DataOpteration(operation) =>
         operation match {
-          case AccountQuery(userId) =>
+          case AccountQueryex(userId) =>
 
             Right(Future.successful(map.find(a => a._1 == userId).get._2._2))
 

@@ -4,13 +4,12 @@ import java.util.UUID
 
 import akka.actor.ActorRef
 import akka.pattern.ask
-import akka.persistence.Update
 import akka.util.Timeout
 import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
-import com.hamlazot.domain.impl.model.AccountModel.{UserAccount, AccountCredentials, UserAccountFactory}
-import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.{AccountQuery, DeleteAccount, StoreAccount, UpdateMail}
-import com.hamlazot.implementation.cqrs.AccountView.{PrematureRequest, AccountEnvelope}
-import com.hamlazot.implementation.cqrs.AccountWriter.{GetAccountQuery, AccountCreationAck, AccountDeletionAck, AccountMailUpdateAck, ChangeAccountMail, CreateAccount}
+import com.hamlazot.domain.impl.model.AccountModel.{AccountCredentials, UserAccount}
+import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.{AccountQueryex, DeleteAccount, StoreAccount, UpdateMail}
+import com.hamlazot.implementation.cqrs.AccountView.{AccountEnvelope, PrematureRequest}
+import com.hamlazot.implementation.cqrs.AccountWriter.{AccountCreationAck, AccountDeletionAck, AccountMailUpdateAck, ChangeAccountMail, CreateAccount, GetAccountQuery}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
@@ -23,7 +22,6 @@ import scalaz.{Id, ~>}
 
 class AccountsRepositoryCQRSInterpreter(writer: ActorRef, reader: ActorRef)(implicit ctxt: ExecutionContext) extends (DataStoreRequest ~> Id.Id) {
 
-  reader ! Update(await = true)
 
   override def apply[A](fa: DataStoreRequest[A]): Id.Id[A] = fa match {
     //case Pure(a) => a
@@ -48,20 +46,22 @@ class AccountsRepositoryCQRSInterpreter(writer: ActorRef, reader: ActorRef)(impl
           val response = (writer ? ChangeAccountMail(id, mail)).mapTo[AccountMailUpdateAck]
 
           val eventualAccount = response.map(ack => {
+            reader ? GetAccountQuery(id)
+            Thread.sleep(1000)
             val futureEnvelope = (reader ? GetAccountQuery(id)).mapTo[AccountEnvelope]
             futureEnvelope.map(env => env.userAccount)
           }).flatMap(identity)
 
           Right(eventualAccount)
 
-        case AccountQuery(id) =>
+        case AccountQueryex(id) =>
           implicit val timeout = Timeout(5 seconds)
-          val futureEnvelope = (reader ? GetAccountQuery(id))//.mapTo[AccountEnvelope]
-          val eventualAccount = futureEnvelope.map {
+          val futureEnvelope = (reader ? GetAccountQuery(id)) //.mapTo[AccountEnvelope]
+        val eventualAccount = futureEnvelope.map {
             case env: AccountEnvelope => env.userAccount
             case PrematureRequest(id) => UserAccount(id, AccountCredentials("john", "doe"), UUID.randomUUID, "john", "john@doe.com")
           }
-              Right(eventualAccount)
+          Right(eventualAccount)
 
 
       }

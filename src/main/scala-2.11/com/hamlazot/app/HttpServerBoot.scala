@@ -6,12 +6,14 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.hamlazot.DataDSL.DataStoreRequest
 import com.hamlazot.app.api.AccountsHttpService
+import com.hamlazot.domain.impl.model.AccountModel
+import com.hamlazot.implementation.cqrs.AccountWriter.AccountCreatedEvent
 import com.hamlazot.implementation.cqrs.AccountsRepositoryCQRSInterpreter
 import com.hamlazot.domain.impl.server.accounts.interpreter.AccountsServiceProduction
 import com.hamlazot.implementation.interpreters.{AccountsRepositoryLoggerInterpreter, AccountsServiceProduct}
 import com.typesafe.config.{ConfigFactory, Config}
 import com.typesafe.scalalogging.LazyLogging
-
+import AccountModel.AccountCredentials
 import scala.concurrent.ExecutionContext
 import scalaz.{Id, ~>}
 
@@ -45,7 +47,6 @@ object HttpServerBoot extends App with LazyLogging {
   implicit val materializer = ActorMaterializer()
   val accountsHandler = new AccountsHttpServiceProvider(httpHost, httpPort, akkaHostname, akkaPort)
   Http().bindAndHandle(accountsHandler.route, "0.0.0.0", 8080)
-  //Http().bind("0.0.0.0", 8080).runForeach(conn => conn.flow.join(accountsHandler.route).run)
 }
 
 class AccountsHttpServiceProvider(httpHost: String,
@@ -55,6 +56,7 @@ class AccountsHttpServiceProvider(httpHost: String,
 
 
   val (viewRegion, writerRegion) = AccountNodeBoot.getRegionActors(system)
+
   override val accountService: AccountsServiceProduction = new AccountsServiceProduction {
     override val dbLogger: ~>[DataStoreRequest, Id.Id] = AccountsRepositoryLoggerInterpreter
     override val dbDriver: ~>[DataStoreRequest, Id.Id] = new AccountsRepositoryCQRSInterpreter(writerRegion, viewRegion)
