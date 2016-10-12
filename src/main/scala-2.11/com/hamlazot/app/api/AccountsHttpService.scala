@@ -6,8 +6,8 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server.Directives.{as, decodeRequest, entity}
 import akka.http.scaladsl.server.directives.{MethodDirectives, MiscDirectives, PathDirectives, RouteDirectives}
 import akka.stream.ActorMaterializer
-import com.hamlazot.domain.impl.model.AccountModel.UserSignupDetails
-import com.hamlazot.domain.impl.server.accounts.interpreter.AccountsServiceProduction
+import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountsServiceProduction}
+import AccountModel.UserSignupDetails
 import com.hamlazot.implementation.serialization.JsonMarshalling
 import com.typesafe.scalalogging.LazyLogging
 import org.json4s.MappingException

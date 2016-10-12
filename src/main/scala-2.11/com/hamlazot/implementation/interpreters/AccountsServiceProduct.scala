@@ -2,7 +2,7 @@ package com.hamlazot.implementation.interpreters
 
 import akka.actor.ActorSystem
 import com.hamlazot.DataDSL.DataStoreRequest
-import com.hamlazot.domain.impl.server.accounts.interpreter.AccountsServiceProduction
+import com.hamlazot.domain.impl.common.accounts.AccountsServiceProduction
 
 import scala.concurrent.ExecutionContext
 import scalaz.{Id, ~>}

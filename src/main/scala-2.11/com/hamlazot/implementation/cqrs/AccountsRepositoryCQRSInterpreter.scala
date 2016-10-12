@@ -6,8 +6,9 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
-import com.hamlazot.domain.impl.model.AccountModel.{AccountCredentials, UserAccount}
-import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.{AccountQueryex, DeleteAccount, StoreAccount, UpdateMail}
+import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountRepositoryF}
+import AccountModel.{AccountCredentials, UserAccount}
+import AccountRepositoryF.DSL.{AccountQueryex, DeleteAccount, StoreAccount, UpdateMail}
 import com.hamlazot.implementation.cqrs.AccountView.{AccountEnvelope, PrematureRequest}
 import com.hamlazot.implementation.cqrs.AccountWriter.{AccountCreationAck, AccountDeletionAck, AccountMailUpdateAck, ChangeAccountMail, CreateAccount, GetAccountQuery}
 
@@ -29,7 +30,7 @@ class AccountsRepositoryCQRSInterpreter(writer: ActorRef, reader: ActorRef)(impl
       operation match {
 
         case StoreAccount(account) =>
-          implicit val timeout = Timeout(5 seconds)
+          implicit val timeout = Timeout(10 seconds)
           val token = UUID.randomUUID
           val response = (writer ? CreateAccount(account.id, account.credentials, token, account.name, account.mail)).mapTo[AccountCreationAck]
           val eventualUnit = response map (ack => (()))

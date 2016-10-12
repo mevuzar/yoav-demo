@@ -12,7 +12,8 @@ import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import akka.persistence.{PersistentActor, PersistentView}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
-import domain.impl.model.AccountModel._
+import com.hamlazot.domain.impl.common.accounts.AccountModel
+import AccountModel._
 import scala.concurrent.duration._
 import AccountWriter._
 import AccountView._

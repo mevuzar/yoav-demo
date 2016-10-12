@@ -1,12 +1,12 @@
 
-package com.hamlazot.domain.impl.server.accounts.interpreter
+package com.hamlazot.domain.impl.common.accounts
 
 import java.util.UUID
 
 import com.hamlazot.DataDSL.DataStoreRequest
-import com.hamlazot.domain.contract.server.AccountsService
-import com.hamlazot.domain.impl.model.AccountModel.{UserAccountFactory, InvalidMailException, AccountCredentials, UserAccount, UserSignupDetails, UserToken}
-import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.AccountDataOperations.{store, query, delete, updateMail}
+import com.hamlazot.domain.contract.common.accounts.AccountsService
+import com.hamlazot.domain.impl.common.accounts.AccountRepositoryF.AccountDataOperations.{delete, query, store, updateMail}
+import AccountModel.{AccountCredentials, InvalidMailException, UserAccount, UserAccountFactory, UserSignupDetails, UserToken}
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}

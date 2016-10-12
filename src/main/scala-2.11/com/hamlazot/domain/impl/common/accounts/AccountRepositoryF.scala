@@ -1,12 +1,10 @@
-package com.hamlazot
-package domain.impl
-package server.accounts.dal
+package com.hamlazot.domain.impl.common.accounts
 
-import model.AccountModel.UserAccount
 import java.util.UUID
-import DataDSL._
-import scala.util.Try
-import scalaz.Free
+
+import com.hamlazot.DataDSL.{DataCall, DataOperations}
+import com.hamlazot.FutureStringOr
+import AccountModel.UserAccount
 
 /**
  * @author yoav @since 7/11/16.

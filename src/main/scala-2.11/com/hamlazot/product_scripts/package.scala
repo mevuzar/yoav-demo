@@ -3,11 +3,12 @@ package com.hamlazot
 import akka.actor.ActorSystem
 import com.hamlazot.DataDSL.DataStoreRequest
 import com.hamlazot.app.AccountNodeBoot
+import com.hamlazot.domain.contract.client.accounts.AccountLocalRepository
+import com.hamlazot.domain.impl.common.accounts.AccountModel
 import com.hamlazot.implementation.cqrs.AccountsRepositoryCQRSInterpreter
 import com.hamlazot.implementation.interpreters.{AccountsRepositoryInMemInterpreter, AccountsServiceProduct}
 import com.typesafe.config.ConfigFactory
-import domain.contract.client.AccountLocalRepository
-import domain.impl.model.AccountModel.{UserToken, UserAccount}
+import AccountModel.{UserToken, UserAccount}
 
 import scalaz.{Id, ~>, Reader}
 

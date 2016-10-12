@@ -1,13 +1,14 @@
-package com.hamlazot
-package domain
+package com.hamlazot.domain
 package impl
 package client.accounts
 
-import model.AccountModel.{AccountCredentials, UserSignupDetails}
-import scalaz.{Free, Id, ~>}
-import contract.client.PreDefInteractions.StringInteraction
-import contract.client.Question
+import com.hamlazot.domain.impl.common.accounts.AccountModel
+import contract.client.PreDefInteractions._
 import contract.client.UserInteractions.interact
+import contract.client.Question
+import AccountModel.{AccountCredentials, UserSignupDetails}
+
+import scalaz.{Free, Id, ~>}
 
 /**
  * @author yoav @since 7/16/16.

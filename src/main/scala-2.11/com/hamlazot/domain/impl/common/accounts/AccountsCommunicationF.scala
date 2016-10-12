@@ -1,12 +1,12 @@
-package com.hamlazot.domain.impl.common.accounts.communication
+package com.hamlazot.domain.impl.common.accounts
 
 import java.util.UUID
 
 import com.hamlazot.FutureStringOr
 import com.hamlazot.ServiceDSL.ServiceMethodCall
-import com.hamlazot.implementation.cqrs.AccountWriter.ChangeAccountMail
-import com.hamlazot.domain.impl.model.AccountModel.{UserToken, UserAccount, AccountCredentials, UserSignupDetails}
 import com.hamlazot.ServiceDSL.ServiceOperations._
+import AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
+
 import scala.util.Try
 
 /**

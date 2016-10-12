@@ -12,8 +12,9 @@ import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import akka.persistence.{DeleteMessagesSuccess, PersistentActor, Update}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
-import com.hamlazot.domain.impl.model.AccountModel.{AccountCredentials, UserAccount}
-import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.DeleteAccount
+import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountRepositoryF}
+import AccountModel.{AccountCredentials, UserAccount}
+import AccountRepositoryF.DSL.DeleteAccount
 import com.hamlazot.implementation.cqrs.AccountWriter.{AccountAck, AccountCreatedEvent, AccountCreationAck, AccountDeletedEvent, AccountDeletionAck, AccountEvent, AccountMailChangedEvent, AccountMailUpdateAck, AccountTokenRefreshAck, AccountTokenRefreshedEvent, ChangeAccountMail, CreateAccount, RefreshToken}
 
 import scala.concurrent.duration._

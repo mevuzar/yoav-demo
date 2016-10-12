@@ -1,15 +1,12 @@
-package com.hamlazot
-package domain
-package impl
-package client.accounts.interpreter
+package com.hamlazot.domain.impl.client.accounts
 
 import java.util.UUID
 
-import ServiceDSL.ServiceOperation
-import implementation.cqrs.Logging
-import contract.client.ClientAccountService
-import common.accounts.communication.AccountsCommunicationF.AccountsCommunicationOperations
-import model.AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
+import com.hamlazot.ServiceDSL.ServiceOperation
+import com.hamlazot.domain.contract.client.accounts.ClientAccountService
+import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountsCommunicationF}
+import AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
+import com.hamlazot.implementation.cqrs.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
@@ -19,8 +16,9 @@ import scalaz.{Free, Id, ~>}
 /**
  * @author yoav @since 7/6/16.
  */
-trait ClientAccountsProductionService extends ClientAccountService with Logging {
-  //with Serializer {
+trait ClientAccountsProductionService extends ClientAccountService with ClientAccountsAggregate with Logging {
+
+  override type AuthenticationToken = UserToken
 
   implicit val ctxt: ExecutionContext
 
@@ -28,14 +26,6 @@ trait ClientAccountsProductionService extends ClientAccountService with Logging 
   val serviceCallLogger: (ServiceOperation ~> Id.Id)
 
   override type Operation[A, B] = A => Future[B]
-  override type Mail = String
-  override type AccountId = java.util.UUID
-  override type SignOutRequest = UUID
-  override type SignInRequest = (UUID, AccountCredentials)
-  override type SignUpRequest = UserSignupDetails
-  override type Account = UserAccount
-  override type AuthenticationToken = UserToken
-  override type GetAccountRequest = UUID
 
   override def getAccount: (UUID) => Future[UserAccount] = { request => {
     val script = AccountsCommunicationOperations.getAccount(request)

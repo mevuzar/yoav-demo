@@ -1,4 +1,4 @@
-package com.hamlazot.implementation.cqrs
+package com.hamlazot.app
 
 import java.util.concurrent.TimeUnit
 
@@ -11,8 +11,8 @@ import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import akka.util.Timeout
-import com.hamlazot.app.AccountNodeBoot
-import com.hamlazot.domain.impl.model.AccountModel.AccountCredentials
+import com.hamlazot.domain.impl.common.accounts.AccountModel
+import AccountModel.AccountCredentials
 import com.hamlazot.implementation.cqrs.AccountWriter.CreateAccount
 import com.typesafe.config.ConfigFactory
 

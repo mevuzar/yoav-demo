@@ -19,6 +19,7 @@ import java.util.Optional
 
 object AccountNodeBoot extends App with LazyLogging{
 
+
   if (args.isEmpty)
     startup(Seq("2551", "2552", "0"))
   else
@@ -34,8 +35,8 @@ object AccountNodeBoot extends App with LazyLogging{
 
       val system = ActorSystem("accounts-service", config)
 
-      startupSharedJournal(system, startStore = (port == "2551"), path =
-        ActorPath.fromString("akka.tcp://accounts-service@127.0.0.1:2551/user/store"))
+//      startupSharedJournal(system, startStore = (port == "2551"), path =
+//        ActorPath.fromString("akka.tcp://accounts-service@127.0.0.1:2551/user/store"))
 
       getRegionActors(system)
 

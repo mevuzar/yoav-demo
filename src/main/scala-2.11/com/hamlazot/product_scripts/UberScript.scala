@@ -5,12 +5,9 @@ package product_scripts
 import java.util.UUID
 
 import com.hamlazot.ServiceDSL.ServiceOperation
-import com.hamlazot.app.AccountNodeBoot
-import com.hamlazot.domain.impl.model.AccountModel.UserSignupDetails
-import com.hamlazot.domain.impl.server.accounts.interpreter.AccountsServiceProduction
-import com.hamlazot.implementation.cqrs.AccountsRepositoryCQRSInterpreter
+import com.hamlazot.domain.impl.common.accounts.AccountModel
+import AccountModel.UserSignupDetails
 import com.hamlazot.implementation.interpreters.{AccountsServiceProduct, ClosedCircuitClientAccount, DirectAccountsServiceCommunication, StdInInteractionInterpreter}
-import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -94,7 +91,7 @@ object ScriptBoot extends App with UberScript with LazyLogging {
     case Array() => {
       signUpFlowWithInteraction
       Thread.sleep(1000)
-      updateMailFlowWithInteraction
+      //updateMailFlowWithInteraction
     }
 
     case Array(name, userName, password, mail, newMail) => {
@@ -103,8 +100,9 @@ object ScriptBoot extends App with UberScript with LazyLogging {
       signUpFlow(details)
 
       Thread.sleep(10000)
-      cccAccount.dataStore.getAccount map{ account =>
-      updateMailFlow((account.id, newMail))}
+      cccAccount.dataStore.getAccount map { account =>
+        updateMailFlow((account.id, newMail))
+      }
     }
   }
 

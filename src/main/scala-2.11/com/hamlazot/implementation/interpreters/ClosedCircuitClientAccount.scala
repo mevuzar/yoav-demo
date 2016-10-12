@@ -3,8 +3,8 @@ package implementation.interpreters
 
 import akka.actor.ActorSystem
 import com.hamlazot.ServiceDSL.ServiceOperation
-import com.hamlazot.domain.impl.client.accounts.interpreter.ClientAccountsProductionService
-import com.hamlazot.domain.impl.server.accounts.interpreter.AccountsServiceProduction
+import com.hamlazot.domain.impl.client.accounts.ClientAccountsProductionService
+import com.hamlazot.domain.impl.common.accounts.AccountsServiceProduction
 
 import scala.concurrent.ExecutionContext
 import scalaz.{Id, ~>}

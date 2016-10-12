@@ -1,4 +1,4 @@
-package com.hamlazot.domain.impl.model
+package com.hamlazot.domain.impl.common.accounts
 
 import java.util.UUID
 

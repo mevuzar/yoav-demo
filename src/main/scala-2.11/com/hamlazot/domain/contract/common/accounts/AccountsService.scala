@@ -1,4 +1,4 @@
-package com.hamlazot.domain.contract.server
+package com.hamlazot.domain.contract.common.accounts
 
 import com.hamlazot.{CommonOperations, CommonTerms}
 
@@ -8,14 +8,7 @@ import scala.util.Try
 /**
  * @author yoav @since 6/21/16.
  */
-trait AccountsService extends CommonOperations with CommonTerms{
-
-  type Account
-  type SignUpRequest
-  type SignInRequest
-  type SignOutRequest
-  type UpdateMailRequest
-  type GetAccountRequest
+trait AccountsService extends CommonOperations with CommonTerms with AccountAggregate{
 
   def signUp: Operation[SignUpRequest, Account]
 

@@ -2,8 +2,9 @@ package com.hamlazot.implementation.interpreters
 
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.UnaryOperator
-import com.hamlazot.domain.contract.client.AccountLocalRepository
-import com.hamlazot.domain.impl.model.AccountModel.UserAccount
+import com.hamlazot.domain.contract.client.accounts.AccountLocalRepository
+import com.hamlazot.domain.impl.common.accounts.AccountModel
+import AccountModel.UserAccount
 
 import scala.util.{Success, Try}
 

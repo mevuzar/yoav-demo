@@ -5,8 +5,9 @@ import java.util.UUID
 import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
 import com.hamlazot.FutureStringOr
 import com.hamlazot.ServiceDSL.ServiceOperation
-import com.hamlazot.domain.impl.model.AccountModel.{UserAccount, UserToken}
-import com.hamlazot.domain.impl.server.accounts.dal.AccountRepositoryF.DSL.AccountDataCall
+import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountRepositoryF}
+import AccountModel.{UserAccount, UserToken}
+import AccountRepositoryF.DSL.AccountDataCall
 
 import scala.collection.mutable.HashMap
 import scala.concurrent.Future
