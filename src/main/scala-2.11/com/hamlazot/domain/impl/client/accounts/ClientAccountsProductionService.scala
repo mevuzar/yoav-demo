@@ -4,6 +4,7 @@ import java.util.UUID
 
 import com.hamlazot.ServiceDSL.ServiceOperation
 import com.hamlazot.domain.contract.client.accounts.ClientAccountService
+import com.hamlazot.domain.impl.common.accounts.AccountsCommunicationF.AccountsCommunicationOperations
 import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountsCommunicationF}
 import AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
 import com.hamlazot.implementation.cqrs.Logging

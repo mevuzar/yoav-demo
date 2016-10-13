@@ -2,6 +2,7 @@ package com.hamlazot.implementation.interpreters
 
 import com.hamlazot.FutureStringOr
 import com.hamlazot.ServiceDSL.{ServerCall, ServiceOperation}
+import com.hamlazot.domain.impl.common.accounts.AccountsCommunicationF.AccountsMethodCall
 import com.hamlazot.domain.impl.common.accounts.{AccountsServiceProduction, AccountsCommunicationF}
 
 import scala.concurrent.Future
