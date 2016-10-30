@@ -1,25 +1,26 @@
-package com.hamlazot.domain.contract.common.users
+package com.hamlazot
+package domain.contract.common.users
 
 import com.hamlazot.{AuthenticatedOperations, CommonTerms}
 
 /**
  * Created by Owner on 9/30/2016.
  */
-private[domain] trait UsersService extends AuthenticatedOperations with UserAggregate {
+private[domain] trait UsersService extends UserAggregate with CommonOperations{
 
-  def createUser: AuthenticatedOperation[CreateUserRequest, UserId]
+  def createUser: Operation[CreateUserRequest, UserId]
 
-  def getUser: AuthenticatedOperation[UserId, User]
+  def getUser: Operation[UserId, User]
 
-  def deleteUser: AuthenticatedOperation[UserId, Boolean]
+  def deleteUser: Operation[UserId, Boolean]
 
-  def addTrustees: AuthenticatedOperation[AddTrusteesRequest, Boolean]
+  def addTrustees: Operation[AddTrusteesRequest, Boolean]
 
-  def addTrusters: AuthenticatedOperation[AddTrustersRequest, Boolean]
+  def addTrusters: Operation[AddTrustersRequest, Boolean]
 
-  def removeTrustees: AuthenticatedOperation[RemoveTrusteesRequest, Boolean]
+  def removeTrustees: Operation[RemoveTrusteesRequest, Boolean]
 
-  def removeTrusters: AuthenticatedOperation[RemoveTrusteesRequest, Boolean]
+  def removeTrusters: Operation[RemoveTrusteesRequest, Boolean]
 
 }
 

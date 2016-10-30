@@ -6,7 +6,8 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
-import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountRepositoryF}
+import com.hamlazot.domain.contract.common.accounts.AccountRepositoryF
+import com.hamlazot.domain.impl.common.accounts.AccountModel
 import AccountModel.{AccountCredentials, UserAccount}
 import AccountRepositoryF.DSL.{AccountQueryex, DeleteAccount, StoreAccount, UpdateMail}
 import com.hamlazot.implementation.cqrs.AccountView.{AccountEnvelope, PrematureRequest}

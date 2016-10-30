@@ -1,4 +1,5 @@
-package com.hamlazot.domain
+package com.hamlazot
+package domain
 package impl
 package client.accounts
 
@@ -31,7 +32,7 @@ trait AccountsUserInteractions {
       mail <- askMail
     } yield (name, userName, password, mail)
 
-    val interpreted = Free.runFC(script)(interpreter)
+    val interpreted = runFC(script)(interpreter)
     UserSignupDetails.tupled(interpreted)
   }
 
@@ -41,7 +42,7 @@ trait AccountsUserInteractions {
       password <- askPassword
     } yield (userName, password)
 
-    val interpreted = Free.runFC(script)(interpreter)
+    val interpreted = runFC(script)(interpreter)
     AccountCredentials.tupled(interpreted)
   }
 
@@ -50,7 +51,7 @@ trait AccountsUserInteractions {
       mail <- askMail
     } yield mail
 
-    val interpreted = Free.runFC(script)(interpreter)
+    val interpreted = runFC(script)(interpreter)
     interpreted
   }
 

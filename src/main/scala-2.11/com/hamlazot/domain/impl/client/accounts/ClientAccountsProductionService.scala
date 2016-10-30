@@ -1,11 +1,13 @@
-package com.hamlazot.domain.impl.client.accounts
+package com.hamlazot
+package domain.impl.client.accounts
 
 import java.util.UUID
 
 import com.hamlazot.ServiceDSL.ServiceOperation
 import com.hamlazot.domain.contract.client.accounts.ClientAccountService
-import com.hamlazot.domain.impl.common.accounts.AccountsCommunicationF.AccountsCommunicationOperations
-import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountsCommunicationF}
+import com.hamlazot.domain.contract.common.accounts.AccountsCommunicationF
+import AccountsCommunicationF.AccountsCommunicationOperations
+import com.hamlazot.domain.impl.common.accounts.AccountModel
 import AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
 import com.hamlazot.implementation.cqrs.Logging
 
@@ -30,10 +32,10 @@ trait ClientAccountsProductionService extends ClientAccountService with ClientAc
 
   override def getAccount: (UUID) => Future[UserAccount] = { request => {
     val script = AccountsCommunicationOperations.getAccount(request)
-    val serviceLog = Free.runFC(script)(serviceCallLogger).left.get
+    val serviceLog = runFC(script)(serviceCallLogger).left.get
     serviceLog.map(log => logger.info(log))
 
-    val result = Free.runFC(script)(accountServiceCommunication).right
+    val result = runFC(script)(accountServiceCommunication).right
     result.get onSuccess {
       case accountTry =>
         dataStore.storeAccount(accountTry)
@@ -47,13 +49,13 @@ trait ClientAccountsProductionService extends ClientAccountService with ClientAc
   override def signUp: (SignUpRequest) => Future[Account] = { request => {
     val script = AccountsCommunicationOperations.signUp(request)
 
-    val serviceLog = Free.runFC(script)(serviceCallLogger).left.get
+    val serviceLog = runFC(script)(serviceCallLogger).left.get
     serviceLog.map(log => {
 
       logger.info(log)
     })
 
-    val result = Free.runFC(script)(accountServiceCommunication).right
+    val result = runFC(script)(accountServiceCommunication).right
     result.get onSuccess {
       case accountTry =>
         dataStore.storeAccount(accountTry)
@@ -65,7 +67,7 @@ trait ClientAccountsProductionService extends ClientAccountService with ClientAc
 
   override def signIn: (SignInRequest) => Future[Try[AuthenticationToken]] = { request => {
     val script = AccountsCommunicationOperations.signIn(request)
-    val futureTryToken = Free.runFC(script)(accountServiceCommunication).right.get
+    val futureTryToken = runFC(script)(accountServiceCommunication).right.get
     futureTryToken onSuccess {
       case Success(token) => dataStore.updateAccount(a => a.copy(token = token.token))
       case _ =>
@@ -77,7 +79,7 @@ trait ClientAccountsProductionService extends ClientAccountService with ClientAc
 
   override def signOut: (SignOutRequest) => Future[Boolean] = { request => {
     val script = AccountsCommunicationOperations.signOut(request)
-    val futureSignOut = Free.runFC(script)(accountServiceCommunication).right.get
+    val futureSignOut = runFC(script)(accountServiceCommunication).right.get
     futureSignOut onSuccess {
       case success => dataStore.updateAccount(a => a.copy(token = null)) //TODO: make token Option[UUID]
       case _ =>
@@ -90,7 +92,7 @@ trait ClientAccountsProductionService extends ClientAccountService with ClientAc
 
   override def changeMailAddress: ((UUID, String)) => Future[UserAccount] = { request =>
     val script = AccountsCommunicationOperations.updateMail(request)
-    val futureUpdateMail = Free.runFC(script)(accountServiceCommunication).right.get
+    val futureUpdateMail = runFC(script)(accountServiceCommunication).right.get
 
     futureUpdateMail onSuccess {
       case account => dataStore.updateAccount(a => a.copy(mail = account.mail))

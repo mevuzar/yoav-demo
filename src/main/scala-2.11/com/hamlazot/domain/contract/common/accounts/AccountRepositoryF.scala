@@ -1,10 +1,10 @@
-package com.hamlazot.domain.impl.common.accounts
+package com.hamlazot.domain.contract.common.accounts
 
 import java.util.UUID
 
 import com.hamlazot.DataDSL.{DataCall, DataOperations}
 import com.hamlazot.FutureStringOr
-import AccountModel.UserAccount
+import com.hamlazot.domain.impl.common.accounts.AccountModel.UserAccount
 
 /**
  * @author yoav @since 7/11/16.
@@ -35,7 +35,7 @@ object AccountRepositoryF {
 
   }
 
-  object AccountDataOperations extends DataOperations {
+  private[domain] object AccountDataOperations extends DataOperations {
 
     import DSL._
 

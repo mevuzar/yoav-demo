@@ -1,11 +1,11 @@
-package com.hamlazot.domain.impl.common.accounts
+package com.hamlazot.domain.contract.common.accounts
 
 import java.util.UUID
 
 import com.hamlazot.FutureStringOr
 import com.hamlazot.ServiceDSL.ServiceMethodCall
 import com.hamlazot.ServiceDSL.ServiceOperations._
-import AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
+import com.hamlazot.domain.impl.common.accounts.AccountModel.{AccountCredentials, UserAccount, UserSignupDetails, UserToken}
 
 import scala.util.Try
 
@@ -26,7 +26,7 @@ object AccountsCommunicationF {
 
   case class GetAccountCall(id: UUID) extends AccountsMethodCall[FutureStringOr[UserAccount]]
 
-  object AccountsCommunicationOperations {
+  private[domain] object AccountsCommunicationOperations {
     def signUp(signupDetails: UserSignupDetails) = serviceOperation(SignUpCall(signupDetails))
 
     def signIn(signInDetails: (UUID, AccountCredentials)) = serviceOperation(SignInCall(signInDetails))

@@ -1,4 +1,5 @@
-package com.hamlazot.domain.contract
+package com.hamlazot
+package domain.contract
 
 import java.time.ZonedDateTime
 
@@ -21,7 +22,7 @@ package object client {
   //final case class InteractComplex[+A](userInteractions: Interaction[_]*) extends Question[A]
 
   object UserInteractions {
-    def interact[A](userInteraction: Interaction[A]) = Free.liftFC(Interact(userInteraction))
+    def interact[A](userInteraction: Interaction[A]) = liftFC(Interact(userInteraction))
 
     //def interact[A](userInteractions: Interaction[_]*) = Free.liftFC(InteractComplex(userInteractions: _*))
   }

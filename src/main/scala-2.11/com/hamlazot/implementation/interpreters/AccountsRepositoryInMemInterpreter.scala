@@ -3,7 +3,8 @@ package com.hamlazot.implementation.interpreters
 import java.util.UUID
 
 import com.hamlazot.DataDSL.{DataOpteration, DataStoreRequest}
-import com.hamlazot.domain.impl.common.accounts.{AccountModel, AccountRepositoryF}
+import com.hamlazot.domain.contract.common.accounts.AccountRepositoryF
+import com.hamlazot.domain.impl.common.accounts.AccountModel
 import com.hamlazot.implementation.cqrs.AccountWriter.RefreshToken
 import AccountModel.{UserAccount, UserToken}
 import AccountRepositoryF.DSL.{UpdateMail, RefreshUserToken, AccountQueryex, DeleteAccount, StoreAccount}

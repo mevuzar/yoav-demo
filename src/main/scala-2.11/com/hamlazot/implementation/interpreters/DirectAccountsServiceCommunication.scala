@@ -1,8 +1,9 @@
 package com.hamlazot.implementation.interpreters
 
 import com.hamlazot.ServiceDSL.{ServerCall, ServiceOperation}
-import com.hamlazot.domain.impl.common.accounts.AccountsCommunicationF.{UpdateMailCall, SignInCall, SignOutCall, SignUpCall, AccountsMethodCall}
-import com.hamlazot.domain.impl.common.accounts.{AccountsServiceProduction, AccountsCommunicationF}
+import com.hamlazot.domain.contract.common.accounts.AccountsCommunicationF
+import AccountsCommunicationF.{UpdateMailCall, SignInCall, SignOutCall, SignUpCall, AccountsMethodCall}
+import com.hamlazot.domain.impl.common.accounts.AccountsServiceProduction
 
 import scalaz.{Id, ~>}
 
