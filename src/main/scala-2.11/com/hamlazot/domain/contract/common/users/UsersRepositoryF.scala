@@ -4,6 +4,7 @@ import java.util.UUID
 
 import com.hamlazot.DataDSL.{DataCall, DataOperations}
 import com.hamlazot._
+import com.hamlazot.domain.impl.common.users.UserAggregate
 
 /**
  * Created by Owner on 10/30/2016.
