@@ -12,13 +12,6 @@ package object hamlazot {
 
   trait CommonOperations {
     type Operation[A, B]
-    type EffectfulOperation[A, B] <: {
-      type EffectfulResult[_] <: {
-        def map[T](f: _ => T): EffectfulResult[T]
-        def flatMap[T](f: _ => EffectfulResult[T]): EffectfulResult[T]
-      }
-    }
-
   }
 
   object AuthenticationDSL {
